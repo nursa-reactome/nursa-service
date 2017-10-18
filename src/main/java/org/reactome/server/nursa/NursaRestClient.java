@@ -50,7 +50,7 @@ public class NursaRestClient {
                 .returnContent()
                 .asStream();
 
-        // Parse the JSON into an array of name-value maps.
+        // Parse the JSON into an iterator over name-value map records.
         ObjectMapper mapper = new ObjectMapper();
         TypeReference<Map<String, Object>> typeRef = new TypeReference<Map<String, Object>>() { };
         ObjectReader reader = mapper.readerFor(typeRef);
