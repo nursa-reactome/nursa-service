@@ -3,14 +3,14 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.reactome.nursa</groupId>
-	<artifactId>nursa-content</artifactId>
+	<artifactId>nursa-service</artifactId>
 
 	<packaging>war</packaging>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>nursa-content</name>
+	<version>1.0.1</version>
+	<name>nursa-service</name>
 
-	<description>The Nursa Reactome Content Service</description>
-	<url>https://github.com/nursa-reactome/nursa-content</url>
+	<description>The Nursa Reactome Service</description>
+	<url>https://github.com/nursa-reactome/nursa-service</url>
 	<organization>
 		<name>Oregon Health and Science University</name>
 		<url>http://www.ohsu.edu/</url>
@@ -34,7 +34,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<reactome.web.nursa-model>1.0.0-SNAPSHOT</reactome.web.nursa-model>
+		<reactome.nursa.model>1.0.1-SNAPSHOT</reactome.nursa.model>
 		<commons.collections.version>4.1</commons.collections.version>
 		<jsp.version>2.1</jsp.version>
 		<swagger.version>2.4.0</swagger.version>
@@ -56,9 +56,9 @@
 	<dependencies>
 		<!-- Nursa shared client/server data model -->
 		<dependency>
-			<groupId>org.reactome.web.pwp</groupId>
+			<groupId>org.reactome.nursa</groupId>
 			<artifactId>nursa-model</artifactId>
-			<version>${reactome.web.nursa-model}</version>
+			<version>${reactome.nursa.model}</version>
 		</dependency>
 		<!--Spring -->
 		<dependency>
@@ -138,7 +138,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>NursaContent</finalName>
+		<finalName>NursaService</finalName>
 		<testSourceDirectory>${project.basedir}/specs</testSourceDirectory>
 		<resources>
 			<resource>
