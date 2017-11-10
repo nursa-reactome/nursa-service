@@ -1,4 +1,4 @@
-package org.reactome.server.nursa;
+package org.reactome.nursa.service;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,10 +16,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 
 /**
+ * This AnalysisRestClient class is the REST interface to perform
+ * Reactome analysis on the server in background when a Nursa
+ * dataset is obtained from the Nursa REST service.
+ * 
  * @author Fred Loney <loneyf@ohsu.edu>
  */
 public class AnalysisRestClient {
-    // FIXME - local AnalysisService -> no entities found.
+    // Note - localhost/AnalysisService only works when there is
+    // an Apache redirect. For testing, point to the production
+    // Reactome server.
     // TODO - point to localhost/AnalysisService.
     //public static String HOST = "localhost";
     public static String HOST = "reactome.org";
@@ -45,9 +51,6 @@ public class AnalysisRestClient {
         URIBuilder builder = new URIBuilder()
                 .setScheme("http")
                 .setHost(HOST)
-                // TODO - map through servlet, set CONTENT_SERVICE_PATH to "/AnalysisService"
-                // and delete port.
-                //.setPort(8181)
                 .setPath(path);
         URI uri = builder.build();
 
