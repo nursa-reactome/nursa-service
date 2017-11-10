@@ -1,4 +1,4 @@
-package org.reactome.server.nursa;
+package org.reactome.nursa.service;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -10,14 +10,10 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.collections4.Transformer;
 import org.apache.commons.collections4.iterators.TransformIterator;
-import org.reactome.web.pwp.nursa.model.DataPoint;
-import org.reactome.web.pwp.nursa.model.DataSet;
-import org.reactome.web.pwp.nursa.model.DataSetPathway;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.reactome.nursa.model.DataPoint;
+import org.reactome.nursa.model.DataSet;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -40,8 +36,20 @@ public class DataSetController {
             " secondary RNA structure.";
     
     @RequestMapping("/dataset")
-    public DataSet dataset(@RequestParam(value="doi") String doi)
+    public DataSet getDataset(@RequestParam(value="doi") String doi)
             throws URISyntaxException, IOException {
+         DataSet dataset = new DataSet();
+        dataset.setDoi(doi);
+        // TODO - get name and description from Nursa REST API.
+        dataset.setName(MOCK_NAME);
+        dataset.setDescription(MOCK_DESCRIPTION);
+        // Get the data points in a separate REST call. 
+        List<DataPoint> dataPoints = getDataPoints(doi);
+        dataset.setDataPoints(dataPoints);
+        return dataset;
+    }
+
+    private List<DataPoint> getDataPoints(String doi) throws URISyntaxException, IOException {
         Iterator<Map<String, Object>> rowIter = NursaRestClient.getDataPoints(doi);
         Transformer<Map<String, Object>, DataPoint> xfm = new Transformer<Map<String, Object>, DataPoint>() {
             @Override
@@ -54,42 +62,7 @@ public class DataSetController {
             }
         };
         Iterator<DataPoint> dpIter = new TransformIterator<Map<String, Object>, DataPoint>(rowIter, xfm);
-        DataSet dataset = new DataSet();
-        // TODO - get name and description from Nursa REST API.
-        dataset.setDoi(doi);
-        dataset.setName(MOCK_NAME);
-        dataset.setDescription(MOCK_DESCRIPTION);
         List<DataPoint> dataPoints = IteratorUtils.toList(dpIter);
-        dataset.setDataPoints(dataPoints);
-        List<String> symbols = dataPoints.stream().map(DataPoint::getSymbol).collect(Collectors.toList());
-        List<DataSetPathway> pathways = this.analyse(symbols);
-        dataset.setPathways(pathways);
-        return dataset;
-    }
-    
-    @RequestMapping(value = "/analyse", method = RequestMethod.POST)
-    public @ResponseBody List<DataSetPathway> analyse(@RequestBody List<String> symbols)
-            throws URISyntaxException, IOException {
-        Map<String, Object> analysisResult = AnalysisRestClient.analyse(symbols);
-        @SuppressWarnings("unchecked")
-        List<Map<String, Object>> pathwaysResult = (List<Map<String, Object>>) analysisResult.get("pathways");
-        Transformer<Map<String, Object>, DataSetPathway> xfm =
-                new Transformer<Map<String, Object>, DataSetPathway>() {
-            @Override
-            public DataSetPathway transform(Map<String, Object> row) {
-                DataSetPathway pathway = new DataSetPathway();
-                pathway.setName((String)row.get("name"));
-                @SuppressWarnings("unchecked")
-                Map<String, Object> entities = (Map<String, Object>) row.get("entities");
-                pathway.setPvalue((double) entities.get("pValue"));
-                pathway.setFdr((double) entities.get("fdr"));
-                // TODO - where do I get the regulation type?
-                pathway.setRegulationType(DataSetPathway.RegulationType.UP);
-                return pathway;
-            }
-        };
-        Iterator<DataSetPathway> pwIter =
-                new TransformIterator<Map<String, Object>, DataSetPathway>(pathwaysResult.iterator(), xfm);
-        return IteratorUtils.toList(pwIter);
+        return dataPoints;
     }
 }

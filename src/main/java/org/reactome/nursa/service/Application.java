@@ -1,4 +1,4 @@
-package org.reactome.server.nursa;
+package org.reactome.nursa.service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
