@@ -16,13 +16,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 
 /**
- * This AnalysisRestClient class is the REST interface to perform
- * Reactome analysis on the server in background when a Nursa
- * dataset is obtained from the Nursa REST service.
+ * The REST interface to perform binomial analysis on the server
+ * in background when a Nursa dataset is obtained from the Nursa
+ * REST service.
  * 
  * @author Fred Loney <loneyf@ohsu.edu>
  */
-public class AnalysisRestClient {
+public class BinomialAnalysisRestClient {
     // Note - localhost/AnalysisService only works when there is
     // an Apache redirect. For testing, point to the production
     // Reactome server.
@@ -47,7 +47,7 @@ public class AnalysisRestClient {
     private static Map<String, Object> getDocument(String endPoint, String payload)
             throws URISyntaxException, IOException {
         // Make the REST URI.
-        String path = AnalysisRestClient.CONTENT_SERVICE_PATH + endPoint + "/projection/";
+        String path = BinomialAnalysisRestClient.CONTENT_SERVICE_PATH + endPoint + "/projection/";
         URIBuilder builder = new URIBuilder()
                 .setScheme("http")
                 .setHost(HOST)

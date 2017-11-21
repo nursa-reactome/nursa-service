@@ -139,7 +139,7 @@
 
 	<build>
 		<finalName>NursaService</finalName>
-		<testSourceDirectory>${project.basedir}/specs</testSourceDirectory>
+		<testSourceDirectory>${project.basedir}/src/test</testSourceDirectory>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
@@ -173,7 +173,7 @@
 				<configuration>
 					<useFile>false</useFile>
 					<includes>
-						<include>**/Analysis*Spec.java</include>
+						<include>**/*Spec.java</include>
 					</includes>
 				</configuration>
 			</plugin>

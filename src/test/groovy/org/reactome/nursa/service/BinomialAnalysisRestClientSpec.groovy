@@ -6,10 +6,10 @@ import spock.lang.Specification
 /**
  * @author Fred Loney <loneyf@ohsu.edu>
  */
-class AnalysisRestClientSpec extends Specification {
+class BinomialAnalysisRestClientSpec extends Specification {
     def "performs analysis"() {
         expect:
-        AnalysisRestClient.analyse(symbols).get("pathways").size() == count
+        BinomialAnalysisRestClient.analyse(symbols).get("pathways").size() == count
 
         where:
           symbols                          | count
