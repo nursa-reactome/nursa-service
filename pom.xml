@@ -24,7 +24,7 @@
 			<organization>http://www.ohsu.edu/</organization>
 		</developer>
 		<developer>
-			<id>guw@ohsu.edu</id>
+			<id>guw</id>
 			<name>Guanming Wu</name>
 			<email>guw@ohsu.edu</email>
 			<organization>http://www.ohsu.edu/</organization>
@@ -34,17 +34,17 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<reactome.nursa.model>1.0.1-SNAPSHOT</reactome.nursa.model>
+		<reactome.nursa.model>1.0.1</reactome.nursa.model>
 		<commons.collections.version>4.1</commons.collections.version>
 		<jsp.version>2.1</jsp.version>
 		<swagger.version>2.4.0</swagger.version>
 		<activation.version>1.1.1</activation.version>
 
 		<jdk.version>1.8</jdk.version>
-		<jackrabbit.version>2.10</jackrabbit.version>
 		<maven.javadoc.version>2.10.3</maven.javadoc.version>
 		<maven.info.report.version>2.8.1</maven.info.report.version>
 		<pmd.version>3.6</pmd.version>
+		<solr.version>7.1.0</solr.version>
 	</properties>
 
 	<parent>
@@ -64,13 +64,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-boot-starter-logging</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+        </dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
@@ -141,17 +135,21 @@
             <version>0.7.1</version>
             <scope>test</scope>
         </dependency>
-	</dependencies>
+        <dependency>
+        	   <groupId>org.apache.solr</groupId>
+        	   <artifactId>solr-solrj</artifactId>
+        </dependency>
+    	</dependencies>
 
 	<build>
 		<finalName>NursaService</finalName>
 		<testSourceDirectory>${project.basedir}/src/test</testSourceDirectory>
 		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
 		<plugins>
 			<plugin>
 				<!-- The gmavenplus plugin is used to compile Groovy code. To learn more 
