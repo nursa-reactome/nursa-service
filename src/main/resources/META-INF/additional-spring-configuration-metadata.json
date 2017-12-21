@@ -1,0 +1,17 @@
+{"properties": [
+  {
+    "name": "solr.user",
+    "type": "java.lang.String",
+    "description": "Solr user"
+  },
+  {
+    "name": "solr.password",
+    "type": "java.lang.String",
+    "description": "Solr password"
+  },
+  {
+    "name": "solr.host",
+    "type": "java.lang.String",
+    "description": "Solr localhost url"
+  }
+]}

@@ -13,7 +13,7 @@ class NursaRestClientSpec extends Specification {
 
         where:
           doi                 | count
-        "10.1621/gTqItVnDEP"  |    5
+        "10.1621/gTqItVnDEP"  |  255
         "10.1621/v6muZTvtU6"  |    4
         "10.1621/Y5uY9kSu0E"  |   24
     }

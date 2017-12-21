@@ -8,6 +8,7 @@ import groovyx.net.http.RESTClient
  */
 class ApplicationSpec extends Specification {
     def client = new RESTClient('http://localhost:8484/')
+
     def "fetches the dataset"() {
         expect:
             def resp = client.get(path: 'dataset', query: [doi: doi])
@@ -16,5 +17,15 @@ class ApplicationSpec extends Specification {
         where:
               doi                 | count
             "10.1621/gTqItVnDEP"  |  255
+    }
+
+    def "searches datasets based on a term"() {
+        expect:
+            def resp = client.get(path: 'search', query: [term: term])
+            assert resp.status == 200
+            assert resp.data.dataSets.size() == count
+        where:
+              term      | count
+             "fulv"     |    6
     }
 }
