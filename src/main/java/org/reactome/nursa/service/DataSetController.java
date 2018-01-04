@@ -76,6 +76,7 @@ public class DataSetController {
         DataSet dataset = new DataSet();
         dataset.setDoi((String) doc.getFieldValue("doi"));
         dataset.setName((String) doc.getFieldValue("name"));
+        dataset.setDescription((String) doc.getFieldValue("description"));
         
         return dataset;
     }
