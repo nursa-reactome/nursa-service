@@ -45,7 +45,20 @@
 		<maven.info.report.version>2.8.1</maven.info.report.version>
 		<pmd.version>3.6</pmd.version>
 		<solr.version>7.1.0</solr.version>
-	</properties>
+		
+        <skip.unit.tests>false</skip.unit.tests>
+        <skip.integration.tests>true</skip.integration.tests>
+   	</properties>
+   	
+	<profiles>
+ 	    <profile>
+	        <id>integration-test</id>
+	        <properties>
+	            <skip.integration.tests>false</skip.integration.tests>
+	            <skip.unit.tests>true</skip.unit.tests>
+	        </properties>
+	    </profile>
+	</profiles>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -65,7 +78,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-		<dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        	<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<optional>true</optional>
@@ -142,8 +160,16 @@
     	</dependencies>
 
 	<build>
-		<finalName>NursaService</finalName>
-		<testSourceDirectory>${project.basedir}/src/test</testSourceDirectory>
+		<finalName>Nursa</finalName>
+		<!--
+		  Both unit and integration tests are written in groovy.
+		  Category marker interfaces are Java files.
+		  Since maven is constrained to a single test source directory,
+		  we set the test source to the groovy subdirectory and fold
+		  in the marker interfaces in the build-helper-maven-plugin
+		  below.
+		 -->
+		<testSourceDirectory>${project.basedir}/src/test/groovy</testSourceDirectory>
 		<resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -151,6 +177,16 @@
             </resource>
         </resources>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<configuration>
+					<delimiters>
+						<delimiter>@</delimiter>
+					</delimiters>
+					<useDefaultDelimiters>false</useDefaultDelimiters>
+				</configuration>
+			</plugin>
 			<plugin>
 				<!-- The gmavenplus plugin is used to compile Groovy code. To learn more 
 					about this plugin, visit https://github.com/groovy/GMavenPlus/wiki -->
@@ -160,12 +196,13 @@
 				<executions>
 					<execution>
 						<goals>
-							<goal>compile</goal>
+							<goal>addTestSources</goal>
 							<goal>testCompile</goal>
 						</goals>
 					</execution>
 				</executions>
 			</plugin>
+            <!--  Unit tests. -->
 			<plugin>
                 <!--
                  Override the default **/*Test.java with **/*Spec.java.
@@ -175,11 +212,53 @@
                  -->
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
+                    <groups>org.reactome.nursa.service.UnitTest</groups>
 					<useFile>false</useFile>
 					<includes>
 						<include>**/*Spec.java</include>
 					</includes>
+                    <skipTests>${skip.unit.tests}</skipTests>
 				</configuration>
+			</plugin>
+			<!--  Java test source files. -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>add-test-source</id>
+						<phase>generate-test-sources</phase>
+						<goals>
+							<goal>add-test-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>src/test/java</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+            <!--  Integration tests. -->
+			<plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-failsafe-plugin</artifactId>
+			    <executions>
+			        <execution>
+			            <id>integration-tests</id>
+			            <goals>
+			                <goal>integration-test</goal>
+			                <goal>verify</goal>
+			            </goals>
+			            <configuration>
+			                <groups>org.reactome.nursa.service.IntegrationTest</groups>
+			                <includes>
+			                    <include>**/*Spec.java</include>
+			                </includes>
+			                <skipTests>${skip.integration.tests}</skipTests>
+			            </configuration>
+			        </execution>
+			    </executions>
 			</plugin>
 		</plugins>
 		<pluginManagement>
@@ -187,6 +266,40 @@
 				<plugin>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-maven-plugin</artifactId>
+						<configuration>
+							<addResources>false</addResources>
+						</configuration>				
+                </plugin>
+				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.codehaus.gmavenplus
+										</groupId>
+										<artifactId>
+											gmavenplus-plugin
+										</artifactId>
+										<versionRange>
+											[1.5,)
+										</versionRange>
+										<goals>
+											<goal>testCompile</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>

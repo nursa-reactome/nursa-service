@@ -1,11 +1,12 @@
 package org.reactome.nursa.service
 
+import org.junit.experimental.categories.Category
 import spock.lang.Specification
-
 
 /**
  * @author Fred Loney <loneyf@ohsu.edu>
  */
+@Category(UnitTest.class)
 class NursaRestClientSpec extends Specification {
     def "fetches data points"() {
         expect:

@@ -1,11 +1,13 @@
 package org.reactome.nursa.service
 
+import org.junit.experimental.categories.Category
 import spock.lang.Specification
 import groovyx.net.http.RESTClient
 
 /**
  * @author Fred Loney <loneyf@ohsu.edu>
  */
+@Category(IntegrationTest.class)
 class ApplicationSpec extends Specification {
     def client = new RESTClient('http://localhost:8484/')
 
@@ -23,9 +25,9 @@ class ApplicationSpec extends Specification {
         expect:
             def resp = client.get(path: 'search', query: [term: term])
             assert resp.status == 200
-            assert resp.data.dataSets.size() == count
+            assert resp.data.datasets.size() == count
         where:
               term      | count
-             "fulv"     |    6
+             "fulv"     |    7
     }
 }
