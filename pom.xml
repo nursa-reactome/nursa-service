@@ -1,146 +1,146 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.reactome.nursa</groupId>
-	<artifactId>nursa-service</artifactId>
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.reactome.nursa</groupId>
+    <artifactId>nursa-service</artifactId>
 
-	<packaging>war</packaging>
-	<version>1.0.1</version>
-	<name>nursa-service</name>
+    <packaging>war</packaging>
+    <version>1.0.1</version>
+    <name>nursa-service</name>
 
-	<description>The Nursa Reactome Service</description>
-	<url>https://github.com/nursa-reactome/nursa-service</url>
-	<organization>
-		<name>Oregon Health and Science University</name>
-		<url>http://www.ohsu.edu/</url>
-	</organization>
+    <description>The Nursa Reactome Service</description>
+    <url>https://github.com/nursa-reactome/nursa-service</url>
+    <organization>
+        <name>Oregon Health and Science University</name>
+        <url>http://www.ohsu.edu/</url>
+    </organization>
 
-	<developers>
-		<developer>
-			<id>loneyf</id>
-			<name>Fred Loney</name>
-			<email>loneyf@ohsu.edu</email>
-			<organization>http://www.ohsu.edu/</organization>
-		</developer>
-		<developer>
-			<id>guw</id>
-			<name>Guanming Wu</name>
-			<email>guw@ohsu.edu</email>
-			<organization>http://www.ohsu.edu/</organization>
-		</developer>
-	</developers>
+    <developers>
+        <developer>
+            <id>loneyf</id>
+            <name>Fred Loney</name>
+            <email>loneyf@ohsu.edu</email>
+            <organization>http://www.ohsu.edu/</organization>
+        </developer>
+        <developer>
+            <id>guw</id>
+            <name>Guanming Wu</name>
+            <email>guw@ohsu.edu</email>
+            <organization>http://www.ohsu.edu/</organization>
+        </developer>
+    </developers>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<reactome.nursa.model>1.0.1</reactome.nursa.model>
-		<commons.collections.version>4.1</commons.collections.version>
-		<jsp.version>2.1</jsp.version>
-		<swagger.version>2.4.0</swagger.version>
-		<activation.version>1.1.1</activation.version>
+        <reactome.nursa.model>1.0.1</reactome.nursa.model>
+        <commons.collections.version>4.1</commons.collections.version>
+        <jsp.version>2.1</jsp.version>
+        <swagger.version>2.4.0</swagger.version>
+        <activation.version>1.1.1</activation.version>
 
-		<jdk.version>1.8</jdk.version>
-		<maven.javadoc.version>2.10.3</maven.javadoc.version>
-		<maven.info.report.version>2.8.1</maven.info.report.version>
-		<pmd.version>3.6</pmd.version>
-		<solr.version>7.1.0</solr.version>
-		
+        <jdk.version>1.8</jdk.version>
+        <maven.javadoc.version>2.10.3</maven.javadoc.version>
+        <maven.info.report.version>2.8.1</maven.info.report.version>
+        <pmd.version>3.6</pmd.version>
+        <solr.version>7.1.0</solr.version>
+
         <skip.unit.tests>false</skip.unit.tests>
         <skip.integration.tests>true</skip.integration.tests>
-   	</properties>
-   	
-	<profiles>
- 	    <profile>
-	        <id>integration-test</id>
-	        <properties>
-	            <skip.integration.tests>false</skip.integration.tests>
-	            <skip.unit.tests>true</skip.unit.tests>
-	        </properties>
-	    </profile>
-	</profiles>
+    </properties>
 
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.0.0.M3</version>
-	</parent>
+    <profiles>
+        <profile>
+            <id>integration-test</id>
+            <properties>
+                <skip.integration.tests>false</skip.integration.tests>
+                <skip.unit.tests>true</skip.unit.tests>
+            </properties>
+        </profile>
+    </profiles>
 
-	<dependencies>
-		<!-- Nursa shared client/server data model -->
-		<dependency>
-			<groupId>org.reactome.nursa</groupId>
-			<artifactId>nursa-model</artifactId>
-			<version>${reactome.nursa.model}</version>
-		</dependency>
-		<!--Spring -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.0.0.M3</version>
+    </parent>
+
+    <dependencies>
+        <!-- Nursa shared client/server data model -->
+        <dependency>
+            <groupId>org.reactome.nursa</groupId>
+            <artifactId>nursa-model</artifactId>
+            <version>${reactome.nursa.model}</version>
+        </dependency>
+        <!--Spring -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>
             <scope>provided</scope>
         </dependency>
-        	<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-webmvc</artifactId>
-		</dependency>
-		<!--Jsp Servlets -->
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet.jsp</groupId>
-			<artifactId>jsp-api</artifactId>
-			<version>${jsp.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>jstl</artifactId>
-		</dependency>
-		<!-- Jackson JSON Processor -->
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-		</dependency>
-		<!-- Swagger for API Documentation -->
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger2</artifactId>
-			<version>${swagger.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger-ui</artifactId>
-			<version>${swagger.version}</version>
-		</dependency>
-		<!--Util -->
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-collections4</artifactId>
-			<version>${commons.collections.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>fluent-hc</artifactId>
-			<version>4.5.3</version>
-		</dependency>
-		<!-- Testing -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+        </dependency>
+        <!--Jsp Servlets -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>jsp-api</artifactId>
+            <version>${jsp.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+        </dependency>
+        <!-- Jackson JSON Processor -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <!-- Swagger for API Documentation -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>${swagger.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>${swagger.version}</version>
+        </dependency>
+        <!--Util -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>${commons.collections.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>fluent-hc</artifactId>
+            <version>4.5.3</version>
+        </dependency>
+        <!-- Testing -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.spockframework</groupId>
             <artifactId>spock-core</artifactId>
@@ -154,256 +154,251 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-        	   <groupId>org.apache.solr</groupId>
-        	   <artifactId>solr-solrj</artifactId>
+            <groupId>org.apache.solr</groupId>
+            <artifactId>solr-solrj</artifactId>
         </dependency>
-    	</dependencies>
+    </dependencies>
 
-	<build>
-		<finalName>Nursa</finalName>
-		<!--
-		  Both unit and integration tests are written in groovy.
-		  Category marker interfaces are Java files.
-		  Since maven is constrained to a single test source directory,
-		  we set the test source to the groovy subdirectory and fold
-		  in the marker interfaces in the build-helper-maven-plugin
-		  below.
-		 -->
-		<testSourceDirectory>${project.basedir}/src/test/groovy</testSourceDirectory>
-		<resources>
+    <build>
+        <finalName>Nursa</finalName>
+        <!-- Both unit and integration tests are written in groovy. Category 
+            marker interfaces are Java files. Since maven is constrained to a single 
+            test source directory, we set the test source to the groovy subdirectory 
+            and fold in the marker interfaces in the build-helper-maven-plugin below. -->
+        <testSourceDirectory>${project.basedir}/src/test/groovy</testSourceDirectory>
+        <resources>
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
             </resource>
         </resources>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<configuration>
-					<delimiters>
-						<delimiter>@</delimiter>
-					</delimiters>
-					<useDefaultDelimiters>false</useDefaultDelimiters>
-				</configuration>
-			</plugin>
-			<plugin>
-				<!-- The gmavenplus plugin is used to compile Groovy code. To learn more 
-					about this plugin, visit https://github.com/groovy/GMavenPlus/wiki -->
-				<groupId>org.codehaus.gmavenplus</groupId>
-				<artifactId>gmavenplus-plugin</artifactId>
-				<version>1.5</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>addTestSources</goal>
-							<goal>testCompile</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-            <!--  Unit tests. -->
-			<plugin>
-                <!--
-                 Override the default **/*Test.java with **/*Spec.java.
-                 Yes, that is .java rather than .groovy per examples
-                 such as spockframework/spock-example. .groovy won't
-                 find the .groovy test files, but .java will.
-                 -->
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <delimiters>
+                        <delimiter>@</delimiter>
+                    </delimiters>
+                    <useDefaultDelimiters>false</useDefaultDelimiters>
+                </configuration>
+            </plugin>
+            <plugin>
+                <!-- The gmavenplus plugin is used to compile Groovy code. 
+                    To learn more about this plugin, visit https://github.com/groovy/GMavenPlus/wiki -->
+                <groupId>org.codehaus.gmavenplus</groupId>
+                <artifactId>gmavenplus-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>addTestSources</goal>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Unit tests. -->
+            <plugin>
+                <!-- Override the default **/*Test.java with **/*Spec.java. 
+                    Yes, that is .java rather than .groovy per examples such as spockframework/spock-example. 
+                    .groovy won't find the .groovy test files, but .java will. -->
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
                     <groups>org.reactome.nursa.service.UnitTest</groups>
-					<useFile>false</useFile>
-					<includes>
-						<include>**/*Spec.java</include>
-					</includes>
+                    <useFile>false</useFile>
+                    <includes>
+                        <include>**/*Spec.java</include>
+                    </includes>
                     <skipTests>${skip.unit.tests}</skipTests>
-				</configuration>
-			</plugin>
-			<!--  Java test source files. -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>add-test-source</id>
-						<phase>generate-test-sources</phase>
-						<goals>
-							<goal>add-test-source</goal>
-						</goals>
-						<configuration>
-							<sources>
-								<source>src/test/java</source>
-							</sources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-            <!--  Integration tests. -->
-			<plugin>
-			    <groupId>org.apache.maven.plugins</groupId>
-			    <artifactId>maven-failsafe-plugin</artifactId>
-			    <executions>
-			        <execution>
-			            <id>integration-tests</id>
-			            <goals>
-			                <goal>integration-test</goal>
-			                <goal>verify</goal>
-			            </goals>
-			            <configuration>
-			                <groups>org.reactome.nursa.service.IntegrationTest</groups>
-			                <includes>
-			                    <include>**/*Spec.java</include>
-			                </includes>
-			                <skipTests>${skip.integration.tests}</skipTests>
-			            </configuration>
-			        </execution>
-			    </executions>
-			</plugin>
-		</plugins>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-boot-maven-plugin</artifactId>
-						<configuration>
-							<addResources>false</addResources>
-						</configuration>				
+                </configuration>
+            </plugin>
+            <!-- Java test source files. -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-test-source</id>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                            <goal>add-test-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>src/test/java</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Integration tests. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>integration-tests</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                        <configuration>
+                            <groups>org.reactome.nursa.service.IntegrationTest</groups>
+                            <includes>
+                                <include>**/*Spec.java</include>
+                            </includes>
+                            <skipTests>${skip.integration.tests}</skipTests>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <configuration>
+                        <addResources>false</addResources>
+                    </configuration>
                 </plugin>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											org.codehaus.gmavenplus
-										</groupId>
-										<artifactId>
-											gmavenplus-plugin
-										</artifactId>
-										<versionRange>
-											[1.5,)
-										</versionRange>
-										<goals>
-											<goal>testCompile</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-	</build>
+                <!--This plugin's configuration is used to store Eclipse 
+                    m2e settings only. It has no influence on the Maven build itself. -->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>
+                                            org.codehaus.gmavenplus
+                                        </groupId>
+                                        <artifactId>
+                                            gmavenplus-plugin
+                                        </artifactId>
+                                        <versionRange>
+                                            [1.5,)
+                                        </versionRange>
+                                        <goals>
+                                            <goal>testCompile</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore></ignore>
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
-	<!--This configuration is needed so that javadoc is included in maven site -->
-	<reporting>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>${maven.javadoc.version}</version>
-				<configuration>
-					<quiet>true</quiet>
-				</configuration>
-				<reportSets>
-					<reportSet>
-						<reports>
-							<report>javadoc</report>
-						</reports>
-					</reportSet>
-				</reportSets>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-project-info-reports-plugin</artifactId>
-				<version>${maven.info.report.version}</version>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-pmd-plugin</artifactId>
-				<version>${pmd.version}</version>
-				<configuration>
-					<skipEmptyReport>false</skipEmptyReport>
-					<linkXRef>false</linkXRef>
-					<sourceEncoding>utf-8</sourceEncoding>
-					<targetJdk>${jdk.version}</targetJdk>
-				</configuration>
-			</plugin>
-		</plugins>
-	</reporting>
+    <!--This configuration is needed so that javadoc is included in maven 
+        site -->
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven.javadoc.version}</version>
+                <configuration>
+                    <quiet>true</quiet>
+                </configuration>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>javadoc</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>${maven.info.report.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>${pmd.version}</version>
+                <configuration>
+                    <skipEmptyReport>false</skipEmptyReport>
+                    <linkXRef>false</linkXRef>
+                    <sourceEncoding>utf-8</sourceEncoding>
+                    <targetJdk>${jdk.version}</targetJdk>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
 
-	<repositories>
-		<repository>
-			<id>spring-milestones</id>
-			<url>http://repo.spring.io/milestone</url>
-		</repository>
-		<!-- EBI repo -->
-		<repository>
-			<id>nexus-ebi-repo</id>
-			<name>The EBI internal repository</name>
-			<url>http://www.ebi.ac.uk/Tools/maven/repos/content/groups/ebi-repo/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		<!-- EBI SNAPSHOT repo -->
-		<repository>
-			<id>nexus-ebi-snapshot-repo</id>
-			<name>The EBI internal snapshot repository</name>
-			<url>http://www.ebi.ac.uk/Tools/maven/repos/content/groups/ebi-snapshots/</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
+    <repositories>
+        <repository>
+            <id>spring-milestones</id>
+            <url>http://repo.spring.io/milestone</url>
+        </repository>
+        <!-- EBI repo -->
+        <repository>
+            <id>nexus-ebi-repo</id>
+            <name>The EBI internal repository</name>
+            <url>http://www.ebi.ac.uk/Tools/maven/repos/content/groups/ebi-repo/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <!-- EBI SNAPSHOT repo -->
+        <repository>
+            <id>nexus-ebi-snapshot-repo</id>
+            <name>The EBI internal snapshot repository</name>
+            <url>http://www.ebi.ac.uk/Tools/maven/repos/content/groups/ebi-snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
-	<pluginRepositories>
-		<pluginRepository>
-			<id>spring-milestones</id>
-			<url>http://repo.spring.io/milestone</url>
-		</pluginRepository>
-		<pluginRepository>
-			<id>bintray</id>
-			<name>Groovy Bintray</name>
-			<url>https://dl.bintray.com/groovy/maven</url>
-			<releases>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>spring-milestones</id>
+            <url>http://repo.spring.io/milestone</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>bintray</id>
+            <name>Groovy Bintray</name>
+            <url>https://dl.bintray.com/groovy/maven</url>
+            <releases>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
 
-	<distributionManagement>
-		<!-- EBI repo -->
-		<repository>
-			<id>pst-release</id>
-			<name>EBI Nexus Repository</name>
-			<url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-release</url>
-		</repository>
-		<!-- EBI SNAPSHOT repo -->
-		<snapshotRepository>
-			<uniqueVersion>false</uniqueVersion>
-			<id>pst-snapshots</id>
-			<name>EBI Nexus Snapshots Repository</name>
-			<url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-snapshots</url>
-		</snapshotRepository>
-	</distributionManagement>
+    <distributionManagement>
+        <!-- EBI repo -->
+        <repository>
+            <id>pst-release</id>
+            <name>EBI Nexus Repository</name>
+            <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-release</url>
+        </repository>
+        <!-- EBI SNAPSHOT repo -->
+        <snapshotRepository>
+            <uniqueVersion>false</uniqueVersion>
+            <id>pst-snapshots</id>
+            <name>EBI Nexus Snapshots Repository</name>
+            <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>
