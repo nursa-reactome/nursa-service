@@ -9,7 +9,7 @@
     <version>1.0.1</version>
     <name>nursa-service</name>
 
-    <description>The Nursa Reactome Service</description>
+    <description>Nursa Reactome Service</description>
     <url>https://github.com/nursa-reactome/nursa-service</url>
     <organization>
         <name>Oregon Health and Science University</name>
@@ -46,16 +46,20 @@
         <pmd.version>3.6</pmd.version>
         <solr.version>7.1.0</solr.version>
 
-        <skip.unit.tests>false</skip.unit.tests>
+        <!--  The default dev mode port. -->
+        <server.port>8484</server.port>
+
         <skip.integration.tests>true</skip.integration.tests>
     </properties>
 
     <profiles>
+        <!--  Integration tests require a running nursa service
+            and are run only if the integration-test profile is
+            active. -->
         <profile>
             <id>integration-test</id>
             <properties>
                 <skip.integration.tests>false</skip.integration.tests>
-                <skip.unit.tests>true</skip.unit.tests>
             </properties>
         </profile>
     </profiles>
@@ -135,6 +139,10 @@
             <artifactId>fluent-hc</artifactId>
             <version>4.5.3</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.solr</groupId>
+            <artifactId>solr-solrj</artifactId>
+        </dependency>
         <!-- Testing -->
         <dependency>
             <groupId>junit</groupId>
@@ -153,10 +161,6 @@
             <version>0.7.1</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.apache.solr</groupId>
-            <artifactId>solr-solrj</artifactId>
-        </dependency>
     </dependencies>
 
     <build>
@@ -173,6 +177,27 @@
             </resource>
         </resources>
         <plugins>
+            <!--  The solr profile is required. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>enforce-all-profiles-are-activated</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireActiveProfile>
+                                    <profiles>solr</profiles>
+                                </requireActiveProfile>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+             <!-- The application.properties format is @<prop>@. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -210,7 +235,6 @@
                     <includes>
                         <include>**/*Spec.java</include>
                     </includes>
-                    <skipTests>${skip.unit.tests}</skipTests>
                 </configuration>
             </plugin>
             <!-- Java test source files. -->
