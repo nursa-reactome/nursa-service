@@ -8,20 +8,19 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import org.apache.commons.collections4.IteratorUtils;
-import org.apache.commons.collections4.Transformer;
-import org.apache.commons.collections4.iterators.TransformIterator;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.reactome.nursa.model.DataPoint;
 import org.reactome.nursa.model.DataSet;
 import org.reactome.nursa.model.DataSetSearchResult;
+import org.reactome.nursa.model.Experiment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,18 +109,20 @@ public class DataSetController {
                 String message = "Could not read cached Nursa dataset file " + path;
                 throw new NursaException(message, e);
             }
-            List<DataPoint> dataPoints = dataset.getDataPoints();
-            if (dataPoints != null && !dataPoints.isEmpty()) {
+            List<Experiment> experiments = dataset.getExperiments();
+            if (experiments != null && !experiments.isEmpty()) {
                 return dataset;
             }
         } else {
-            // TODO - seed the names and descriptions from a new Nursa REST API endpoint.
+            // TODO - seed the names and descriptions from a new
+            // Nursa REST API endpoint.
             throw new NursaException("Dataset not found: " + doi);
         }
 
-        // Get the data points in a separate REST call.
-        List<DataPoint> dataPoints = getDataPoints(doi);
-        dataset.setDataPoints(dataPoints);
+        // The dataset is not cached: get the data points in a
+        // separate REST call.
+        List<Experiment> experiments = getExperiments(doi);
+        dataset.setExperiments(experiments);
         // Cache the dataset.
         File file = path.toFile();
         File dir = file.getParentFile();
@@ -147,11 +148,29 @@ public class DataSetController {
         return dataset;
     }
 
-    private List<DataPoint> getDataPoints(String doi) throws URISyntaxException, IOException {
-        Iterator<Map<String, Object>> rowIter = NursaRestClient.getDataPoints(doi);
-        Transformer<Map<String, Object>, DataPoint> xfm = new Transformer<Map<String, Object>, DataPoint>() {
+    private List<Experiment> getExperiments(String doi) throws URISyntaxException, IOException {
+        ArrayList<Experiment> experiments = new ArrayList<Experiment>();
+        // Make the DataPoint and add to the appropriate the experiment.
+        Consumer<Map<String, Object>> transform = new Consumer<Map<String, Object>>() {
+
             @Override
-            public DataPoint transform(Map<String, Object> row) {
+            public void accept(Map<String, Object> row) {
+                    // The one-based experiment number.
+                String expNbr = (String) row.get("experimentNumber");
+                int expNdx = Integer.parseUnsignedInt(expNbr) - 1;
+                if (experiments.size() <= expNdx) {
+                    experiments.ensureCapacity(expNdx + 1);
+                    for (int i=experiments.size(); i <= expNdx; i++) {
+                        experiments.add(null);
+                    }
+                }
+                Experiment experiment = experiments.get(expNdx);
+                if (experiment == null) {
+                    experiment = new Experiment();
+                    experiment.setName((String) row.get("experimentName"));
+                    experiment.setDataPoints(new ArrayList<DataPoint>());
+                    experiments.set(expNdx, experiment);
+                }
                 DataPoint dataPoint = new DataPoint();
                 dataPoint.setSymbol((String) row.get("symbol"));
                 // Zero parses as an Integer.
@@ -159,11 +178,13 @@ public class DataSetController {
                 dataPoint.setPvalue(pValue.doubleValue());
                 Number fc = (Number) row.get("foldChange");
                 dataPoint.setFoldChange(fc.doubleValue());
-                return dataPoint;
+                experiment.getDataPoints().add(dataPoint);
             }
+
         };
-        Iterator<DataPoint> dpIter = new TransformIterator<Map<String, Object>, DataPoint>(rowIter, xfm);
-        List<DataPoint> dataPoints = IteratorUtils.toList(dpIter);
-        return dataPoints;
+        // Iterate over each record returned by the REST call.
+        NursaRestClient.getDataPoints(doi).forEachRemaining(transform);
+        // Return the populated experiment list.
+        return experiments;
     }
 }
