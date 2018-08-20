@@ -1,4 +1,4 @@
-package org.reactome.nursa.service;
+package org.reactome.nursa.controller;
 
 public class NursaException extends RuntimeException {
 

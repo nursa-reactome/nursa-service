@@ -1,4 +1,4 @@
-package org.reactome.nursa.service;
+package org.reactome.nursa.dao;
 
 import java.io.IOException;
 import java.io.InputStream;

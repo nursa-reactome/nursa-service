@@ -3,7 +3,7 @@
  * https://stackoverflow.com/questions/2014700/preemptive-basic-authentication-with-apache-httpclient-4
  * as is presumably the search-core implementation. 
  */
-package org.reactome.nursa.service;
+package org.reactome.nursa.controller;
 
 import org.apache.http.HttpException;
 import org.apache.http.HttpHost;

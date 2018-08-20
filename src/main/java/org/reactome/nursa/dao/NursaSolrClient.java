@@ -1,4 +1,4 @@
-package org.reactome.nursa.service;
+package org.reactome.nursa.dao;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -13,20 +13,22 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.reactome.nursa.controller.PreemptiveAuthInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
+
 
 /**
  * The Solr interaction facade.
  * 
  * @author Fred Loney <loneyf@ohsu.edu>
  */
-@Repository
+@Component
 public class NursaSolrClient {
 
     private final HttpSolrClient solrClient;
- 
+
     @Autowired
     public NursaSolrClient(@Value("${solr.host}") String host,
                            @Value("${solr.user}") String user,
@@ -35,7 +37,8 @@ public class NursaSolrClient {
         if (user == null || user.isEmpty() || password == null || password.isEmpty()) {
             solrClient = builder.build();
         } else {
-            HttpClientBuilder httpBuilder = HttpClientBuilder.create().addInterceptorFirst(new PreemptiveAuthInterceptor());
+            PreemptiveAuthInterceptor interceptor = new PreemptiveAuthInterceptor();
+            HttpClientBuilder httpBuilder = HttpClientBuilder.create().addInterceptorFirst(interceptor);
             CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
             UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(user, password);
             credentialsProvider.setCredentials(AuthScope.ANY, credentials);

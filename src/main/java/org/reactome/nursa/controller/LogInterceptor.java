@@ -1,4 +1,4 @@
-package org.reactome.nursa.service;
+package org.reactome.nursa.controller;
 
 import java.util.Arrays;
 import java.util.Map.Entry;
@@ -43,6 +43,11 @@ public class LogInterceptor implements HandlerInterceptor {
         String valueStr = value.length == 1 ? valsStr : "[" + valsStr + "]";
         
         return entry.getKey() + ": " + valueStr;
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
+            Object object, Exception e) throws Exception {
     }
  
 }

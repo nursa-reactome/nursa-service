@@ -1,4 +1,4 @@
-package org.reactome.nursa.service;
+package org.reactome.nursa.controller;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+
+import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
@@ -21,8 +23,9 @@ import org.reactome.nursa.model.DataPoint;
 import org.reactome.nursa.model.DataSet;
 import org.reactome.nursa.model.DataSetSearchResult;
 import org.reactome.nursa.model.Experiment;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.reactome.nursa.controller.NursaException;
+import org.reactome.nursa.dao.NursaRestClient;
+import org.reactome.nursa.dao.NursaSolrClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,14 +37,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author Fred Loney <loneyf@ohsu.edu>
  */
 @RestController
-public class DataSetController {
+public class NursaController {
 
-    private static final String NURSA_CACHE_DIR = "/usr/local/reactomes/Reactome/production/nursa";
+    private static final Logger logger = Logger.getLogger(NursaController.class);
+ 
+    private static final String NURSA_CACHE_DIR =
+            "/usr/local/reactomes/Reactome/production/nursa";
 
-    private static final String DATASET_CACHE_DIR = NURSA_CACHE_DIR + "/datasets";
+    private static final String DATASET_CACHE_DIR =
+            NURSA_CACHE_DIR + "/datasets";
     
-    Logger log = LoggerFactory.getLogger(this.getClass());
-
     @Autowired
     private NursaSolrClient solrClient;
  
@@ -63,10 +68,10 @@ public class DataSetController {
         long numFound = solrResults.getNumFound();
         searchResult.setNumFound((int) numFound);
         List<DataSet> datasets = solrResults.stream()
-                                            .map(DataSetController::asDataSet)
+                                            .map(NursaController::asDataSet)
                                             .collect(Collectors.toList());
         searchResult.setDatasets(datasets);
-        log.info("Search on \"" + term + "\" matched " + numFound + " datasets.");
+        logger.info("Search on \"" + term + "\" matched " + numFound + " datasets.");
         
         return searchResult;
     }
@@ -187,4 +192,5 @@ public class DataSetController {
         // Return the populated experiment list.
         return experiments;
     }
+
 }
