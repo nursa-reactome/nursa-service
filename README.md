@@ -15,22 +15,28 @@ Installation
 3. Install and configure Solr as described in the Reactome
    [search-indexer](https://github.com/reactome/search-indexer) repository.
 
-4. Define the following Maven profiles in
-   `.m2/settings.xml`<a name="solr-profile-note-link" href="#user-content-solr-profile-note"><sup>1</sup></a>:
+4. Obtain a Nursa API key from nursa.org.
+ 
+5. Define`$HOME/.m2/settings.xml` Maven profiles that set the access
+   authorization properties
+   <a name="solr-profile-note-link" href="#user-content-solr-profile-note"><sup>1</sup></a>,
+   e.g.:
 
         <profile>
             <id>solr</id>
             <properties>
                 <!-- Solr authorization -->
                 <solr.user>solr</solr.user>
-                <solr.password>solr</solr.password>
+                <solr.password>my-solr-password</solr.password>
             </properties>
         </profile>
         <profile>
             <id>nursa</id>
             <properties>
-                <!-- Solr host -->
-                <solr.host>http://localhost:8983/solr/reactome</solr.host>
+                <!-- The Nursa Solr core host name. -->
+                <solr.host>http://localhost:8983/solr/nursa</solr.host>
+                <!-- The Nursa REST API access key. -->
+                <nursa.api.key>my-api-key</nursa.api.key>
             </properties>
         </profile>
 
@@ -48,7 +54,7 @@ Installation
    [Nursa Reactome Portal](https://github.com/nursa-reactome/browser).
 
 8. Alternatively, the Nursa Reactome REST service can be started locally
-   in an embedded server with the Maven `spring-boot:run` goal: 
+   in an embedded server with the Maven `tomcat7:run` goal: 
 
         mvn tomcat7:run
 
