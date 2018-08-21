@@ -19,10 +19,10 @@ import com.fasterxml.jackson.databind.ObjectReader;
  * @author Fred Loney <loneyf@ohsu.edu>
  */
 public class NursaRestClient {
-    public static String HOST = "www.nursa.org";
-    public static String CONTENT_SERVICE_PATH = "/nursa/rest/api/1/";
-    public static String GENE_LIST_END_POINT = "datapoints";
-    public static String API_KEY = "78c33248-66f6-43d0-bc64-fad12cea324a";
+    private static String HOST = "www.nursa.org";
+    private static String CONTENT_SERVICE_PATH = "/nursa/rest/api/1/";
+    private static String GENE_LIST_END_POINT = "datapoints";
+    private static String API_KEY = "78c33248-66f6-43d0-bc64-fad12cea324a";
 
     public static Iterator<Map<String, Object>> getDataPoints(String doi)
             throws URISyntaxException, IOException {

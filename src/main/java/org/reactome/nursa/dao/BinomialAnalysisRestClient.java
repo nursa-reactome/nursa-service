@@ -27,11 +27,11 @@ public class BinomialAnalysisRestClient {
     // an Apache redirect. For testing, point to the production
     // Reactome server.
     // TODO - point to localhost/AnalysisService.
-    //public static String HOST = "localhost";
-    public static String HOST = "reactome.org";
-    //public static String CONTENT_SERVICE_PATH = "";
-    public static String CONTENT_SERVICE_PATH = "/AnalysisService";
-    public static String END_POINT = "/identifiers";
+    //private static String HOST = "localhost";
+    private static String HOST = "reactome.org";
+    //private static String CONTENT_SERVICE_PATH = "";
+    private static String CONTENT_SERVICE_PATH = "/AnalysisService";
+    private static String END_POINT = "/identifiers";
 
     public static Map<String, Object> analyse(String[] symbols)
             throws URISyntaxException, IOException {
