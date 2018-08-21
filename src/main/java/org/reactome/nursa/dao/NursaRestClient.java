@@ -10,6 +10,9 @@ import java.util.Map;
 
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.utils.URIBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,29 +21,38 @@ import com.fasterxml.jackson.databind.ObjectReader;
 /**
  * @author Fred Loney <loneyf@ohsu.edu>
  */
+@Component
 public class NursaRestClient {
-    private static String HOST = "www.nursa.org";
-    private static String CONTENT_SERVICE_PATH = "/nursa/rest/api/1/";
-    private static String GENE_LIST_END_POINT = "datapoints";
-    private static String API_KEY = "78c33248-66f6-43d0-bc64-fad12cea324a";
-
-    public static Iterator<Map<String, Object>> getDataPoints(String doi)
+    
+    @Value("${nursa.host}")
+    private String host;
+    
+    @Value("${nursa.content.service.path}")
+    private String servicePath;
+    
+    @Value("${nursa.gene.list.end.point}")
+    private String endPoint;
+    
+    @Value("${nursa.api.key}")
+    private String apiKey;
+    
+    public Iterator<Map<String, Object>> getDataPoints(String doi)
             throws URISyntaxException, IOException {
         Map<String, String> params = new HashMap<>();
         params.put("doi", doi);
 
-        return getDocument(GENE_LIST_END_POINT, params);
+        return getDocument(endPoint, params);
     }
 
-    private static Iterator<Map<String, Object>> getDocument(String endPoint, Map<String, String> params)
+    private Iterator<Map<String, Object>> getDocument(String endPoint, Map<String, String> params)
             throws URISyntaxException, IOException {
         // Make the REST URI.
-        String path = NursaRestClient.CONTENT_SERVICE_PATH + endPoint + "/query/";
+        String path = servicePath + endPoint + "/query/";
         URIBuilder builder = new URIBuilder()
                 .setScheme("https")
-                .setHost(HOST)
+                .setHost(host)
                 .setPath(path)
-                .addParameter("apiKey", NursaRestClient.API_KEY);
+                .addParameter("apiKey", apiKey);
         params.forEach(builder::addParameter);
         URI uri = builder.build();
 
