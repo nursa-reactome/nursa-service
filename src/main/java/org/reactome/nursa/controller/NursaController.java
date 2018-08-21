@@ -39,7 +39,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RestController
 public class NursaController {
 
-    private static final Logger logger = Logger.getLogger(NursaController.class);
+    private static final Logger logger =
+            Logger.getLogger(NursaController.class);
  
     private static final String NURSA_CACHE_DIR =
             "/usr/local/reactomes/Reactome/production/nursa";
@@ -49,6 +50,9 @@ public class NursaController {
     
     @Autowired
     private NursaSolrClient solrClient;
+    
+    @Autowired
+    private NursaRestClient nursaClient;
  
     /**
      * Searches for the given term in the dataset doi, name and description.
@@ -59,9 +63,10 @@ public class NursaController {
      * @throws IOException if the Nursa REST server could not be accessed
      */
     @RequestMapping("/search")
-    public DataSetSearchResult search(@RequestParam(value="term") String term,
-                                      @RequestParam(value="start") Optional<Integer> start,
-                                      @RequestParam(value="size") Optional<Integer> size) {
+    public DataSetSearchResult search(
+            @RequestParam(value="term") String term,
+            @RequestParam(value="start") Optional<Integer> start,
+            @RequestParam(value="size") Optional<Integer> size) {
         QueryResponse response = solrClient.search(term, start, size);
         SolrDocumentList solrResults = response.getResults();
         DataSetSearchResult searchResult = new DataSetSearchResult();
@@ -153,10 +158,13 @@ public class NursaController {
         return dataset;
     }
 
-    private List<Experiment> getExperiments(String doi) throws URISyntaxException, IOException {
+    private List<Experiment> getExperiments(String doi)
+            throws URISyntaxException, IOException {
         ArrayList<Experiment> experiments = new ArrayList<Experiment>();
-        // Make the DataPoint and add to the appropriate the experiment.
-        Consumer<Map<String, Object>> transform = new Consumer<Map<String, Object>>() {
+        // Add each data pointto the appropriate experiment.
+        // The experiments are made on demand.
+        Consumer<Map<String, Object>> transform =
+                new Consumer<Map<String, Object>>() {
 
             @Override
             public void accept(Map<String, Object> row) {
@@ -188,7 +196,8 @@ public class NursaController {
 
         };
         // Iterate over each record returned by the REST call.
-        NursaRestClient.getDataPoints(doi).forEachRemaining(transform);
+        nursaClient.getDataPoints(doi).forEachRemaining(transform);
+
         // Return the populated experiment list.
         return experiments;
     }
