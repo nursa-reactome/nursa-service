@@ -34,7 +34,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <reactome.nursa.model>1.0.1</reactome.nursa.model>
+        <reactome.nursa.model>1.0.2</reactome.nursa.model>
         <failOnMissingWebXml>false</failOnMissingWebXml>
         <commons.collections.version>4.1</commons.collections.version>
         <solr.solrj.version>7.1.0</solr.solrj.version>
