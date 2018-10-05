@@ -42,21 +42,7 @@
 
         <!--  The default dev mode port. -->
         <server.port>8484</server.port>
-
-        <skip.integration.tests>true</skip.integration.tests>
     </properties>
-
-    <profiles>
-        <!--  Integration tests require a running nursa service
-            and are run only if the integration-test profile is
-            active. -->
-        <profile>
-            <id>integration-test</id>
-            <properties>
-                <skip.integration.tests>false</skip.integration.tests>
-            </properties>
-        </profile>
-    </profiles>
 
     <dependencies>
         <!-- junit test -->
