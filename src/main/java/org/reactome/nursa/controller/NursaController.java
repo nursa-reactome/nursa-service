@@ -1,6 +1,8 @@
 package org.reactome.nursa.controller;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -38,6 +40,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 @RestController
 public class NursaController {
+
+    private static final String EXPERIMENTS_DIR_NAME = "experiments";
 
     private static final Logger logger =
             Logger.getLogger(NursaController.class);
@@ -107,68 +111,128 @@ public class NursaController {
         String objId = relPath[1];
         String dsFile = objId + ".json";
         
-        Path path = Paths.get(DATASET_CACHE_DIR, registrant, dsFile);
+        Path path = Paths.get(DATASET_CACHE_DIR, registrant, objId, dsFile);
+        File file = path.toFile();
         DataSet dataset;
-        if (Files.exists(path)) {
+        if (file.exists()) {
+            FileReader reader = new FileReader(file);
+            ObjectMapper mapper = new ObjectMapper();
             try {
-                InputStream fis = Files.newInputStream(path);
-                ObjectMapper mapper = new ObjectMapper();
-                dataset = mapper.readValue(fis, DataSet.class);
-                fis.close();
+                dataset = mapper.readValue(reader, DataSet.class);
             } catch (Exception e) {
-                String message = "Could not read cached Nursa dataset file " + path;
+                String message =
+                        "Could not read the cached Nursa dataset file: " + file;
                 throw new NursaException(message, e);
+            } finally {
+                reader.close();
             }
-            List<Experiment> experiments = dataset.getExperiments();
-            if (experiments != null && !experiments.isEmpty()) {
-                return dataset;
-            }
+            return dataset;
         } else {
             // TODO - seed the names and descriptions from a new
             // Nursa REST API endpoint.
             throw new NursaException("Dataset not found: " + doi);
         }
+    }
 
-        // The dataset is not cached: get the data points in a
-        // separate REST call.
-        List<Experiment> experiments = getExperiments(doi);
-        dataset.setExperiments(experiments);
-        // Cache the dataset.
-        File file = path.toFile();
-        File dir = file.getParentFile();
+    /**
+     * Fetches the dataset content for the given dataset identifier.
+     * 
+     * @param doi the dataset identifier
+     * @return the JSON {doi, datapoints} dataset object
+     * @throws URISyntaxException if the Nursa REST API uri is malformed
+     * @throws IOException if the Nursa REST server could not be accessed
+     */
+    @RequestMapping("/datapoints")
+    public List<DataPoint> getDataPoints(
+            @RequestParam(value="doi") String doi,
+            @RequestParam(value="experimentNumber") int expNbr)
+            throws URISyntaxException, IOException {
+        // Check the local file cache.
+        String[] relPath = doi.split("/");
+        String registrant = relPath[0];
+        String objId = relPath[1];
+        String expFileName = expNbr + ".json";
+        
+        Path expsPath = Paths.get(DATASET_CACHE_DIR, registrant, objId,
+                EXPERIMENTS_DIR_NAME);
+        Path expPath = Paths.get(expsPath.toString(), expFileName);
+        File file = expPath.toFile();
+        if (file.exists()) {
+            Experiment experiment;
+            FileReader reader = new FileReader(file);
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                experiment = mapper.readValue(reader, Experiment.class);
+            } catch (Exception e) {
+                String message =
+                        "Could not read cached Nursa experiment file: " + file;
+                throw new NursaException(message, e);
+            } finally {
+                reader.close();
+            }
+            return experiment.getDataPoints();
+        } else {
+            // The data points are not cached: fetch and cache the data points.
+            List<Experiment> experiments = getExperiments(doi, expsPath);
+            Experiment experiment = experiments.get(expNbr - 1);
+            return experiment.getDataPoints();
+        }
+    }
+
+    /**
+     * Fetches the given DOI data points, groups them by experiment,
+     * and caches the experiments.
+     * 
+     * @param doi the experiment DOI
+     * @param path the DOI experiments cache directory path
+     * @return the fetched experiments
+     * @throws URISyntaxException
+     * @throws IOException
+     */
+    private List<Experiment> getExperiments(String doi, Path path)
+            throws URISyntaxException, IOException {
+        List<Experiment> experiments = fetchExperiments(doi);
+        // Make the parent directory, if necessary.
+        File dir = path.toFile();
         if (!dir.exists()) {
             try {
                 dir.mkdirs();
             }
             catch (SecurityException e) {
-                String message = "Could not create Nursa dataset cache directory " + dir;
+                String message = "Could not create Nursa experiment cache directory " + dir;
                 throw new NursaException(message, e);
             }
         }
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            OutputStream fos = Files.newOutputStream(path);
-            mapper.writeValue(fos, dataset);
-            fos.close();
-        } catch (Exception e) {
-            String message = "Nursa dataset could not be cached in " + file;
-            throw new NursaException(message, e);
+        // Cache the experiments.
+        for (int i = 0; i < experiments.size(); i++) {
+            Experiment experiment = experiments.get(i);
+            ObjectMapper mapper = new ObjectMapper();
+            String expFileName = Integer.toString(i + 1);
+            File file = new File(dir, expFileName);
+            try {
+                FileWriter writer = new FileWriter(file);
+                mapper.writeValue(writer, experiment);
+                writer.close();
+            } catch (Exception e) {
+                String message = "Nursa experiment could not be cached in " + file;
+                throw new NursaException(message, e);
+            }
         }
         
-        return dataset;
+        return experiments;
     }
 
-    private List<Experiment> getExperiments(String doi)
+    private List<Experiment> fetchExperiments(String doi)
             throws URISyntaxException, IOException {
         ArrayList<Experiment> experiments = new ArrayList<Experiment>();
-        // Add each data pointto the appropriate experiment.
+        // Add each data point to the appropriate experiment.
         // The experiments are made on demand.
         Consumer<Map<String, Object>> transform =
                 new Consumer<Map<String, Object>>() {
 
             @Override
             public void accept(Map<String, Object> row) {
-                    // The one-based experiment number.
+                // The one-based experiment number.
                 String expNbr = (String) row.get("experimentNumber");
                 int expNdx = Integer.parseUnsignedInt(expNbr) - 1;
                 if (experiments.size() <= expNdx) {
