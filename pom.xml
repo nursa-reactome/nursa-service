@@ -38,7 +38,7 @@
         <failOnMissingWebXml>false</failOnMissingWebXml>
         <commons.collections.version>4.1</commons.collections.version>
         <solr.solrj.version>7.1.0</solr.solrj.version>
-        <spring.version>4.2.5.RELEASE</spring.version>
+        <spring.version>5.3.18</spring.version>
 
         <!--  The default dev mode port. -->
         <server.port>8484</server.port>
